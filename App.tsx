@@ -231,7 +231,7 @@ const App: React.FC = () => {
                     </p>
                      <p className="text-xs text-[#EE4035] mt-2 font-bold hover:underline cursor-pointer">
                         <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" rel="noreferrer">
-                            > READ_DOCS
+                            &gt; READ_DOCS
                         </a>
                     </p>
                 </div>
