@@ -59,10 +59,10 @@ const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenera
   const isProModel = state.modelId === 'gemini-3-pro-image-preview';
 
   return (
-    <div className="flex flex-col h-full bg-black border-r-4 border-double border-[#FFEA00] text-white w-full md:w-[500px] shrink-0 z-30 overflow-hidden relative shadow-[20px_0_0_0_rgba(238,64,53,0.1)]">
+    <div className="flex flex-col h-full bg-black border-r-0 md:border-r-4 border-double border-[#FFEA00] text-white w-full md:w-[500px] shrink-0 z-30 overflow-hidden relative shadow-[20px_0_0_0_rgba(238,64,53,0.1)]">
       
       {/* 1. Sticky Acid Header */}
-      <div className="shrink-0 bg-black border-b-4 border-[#EE4035] px-6 py-6 z-50 flex items-center justify-between relative overflow-hidden">
+      <div className="shrink-0 bg-black border-b-4 border-[#EE4035] px-4 md:px-6 py-4 md:py-6 z-50 flex items-center justify-between relative overflow-hidden">
          {/* Moving Gradient Stripe */}
          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#FFEA00] via-[#EE4035] to-[#FFEA00] animate-[gradient-move_2s_linear_infinite] bg-[length:200%_100%]"></div>
 
@@ -85,7 +85,7 @@ const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenera
       </div>
 
       {/* 2. Scrollable Void */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8 relative z-0 pb-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#111] to-black">
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 space-y-6 md:space-y-8 relative z-0 pb-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#111] to-black">
         
         {/* SECTION: SYSTEM CORE */}
         <div className="space-y-2 relative">
@@ -115,25 +115,25 @@ const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenera
                 ACTION INJECTION
              </div>
              
-             <div className="grid grid-cols-3 gap-4">
+             <div className="grid grid-cols-3 gap-2 md:gap-4">
                  {[
                    { id: 'actor', label: 'ACTOR', icon: Icons.User, data: state.actors[0], remove: () => removeImage(state.actors[0].id, 'actor'), upload: (e: any) => handleFileUpload(e, 'actor') },
                    { id: 'ref', label: 'REF_IMG', icon: Icons.Image, data: state.references[0], remove: () => removeImage(state.references[0].id, 'reference'), upload: (e: any) => handleFileUpload(e, 'reference') },
                    { id: 'logo', label: 'LOGO', icon: Icons.Star, data: state.references[1], remove: () => removeImage(state.references[1].id, 'reference'), upload: (e: any) => handleFileUpload(e, 'reference') }
                  ].map((slot, i) => (
-                    <div key={i} className="aspect-square bg-black border-2 border-dashed border-[#333] hover:border-[#FFEA00] hover:border-solid transition-all relative group overflow-hidden hover:rotate-1 hover:scale-105 duration-300">
+                    <div key={i} className="aspect-square bg-black border-2 border-dashed border-[#333] active:border-[#FFEA00] md:hover:border-[#FFEA00] md:hover:border-solid transition-all relative group overflow-hidden md:hover:rotate-1 md:hover:scale-105 duration-300">
                         {slot.data ? (
                             <>
-                                <img src={slot.data.previewUrl} className="w-full h-full object-cover filter contrast-125 grayscale group-hover:grayscale-0 transition-all" alt="upload" />
-                                <button onClick={slot.remove} className="absolute inset-0 flex items-center justify-center bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <Icons.Trash className="w-6 h-6 text-[#EE4035]" />
+                                <img src={slot.data.previewUrl} className="w-full h-full object-cover filter contrast-125 grayscale md:group-hover:grayscale-0 transition-all" alt="upload" />
+                                <button onClick={slot.remove} className="absolute inset-0 flex items-center justify-center bg-black/80 opacity-0 md:group-hover:opacity-100 active:opacity-100 transition-opacity">
+                                    <Icons.Trash className="w-5 h-5 md:w-6 md:h-6 text-[#EE4035]" />
                                 </button>
                             </>
                         ) : (
-                            <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer text-[#333] hover:text-[#FFEA00] group-hover:bg-[#111]">
-                                <slot.icon className="w-6 h-6 mb-2 group-hover:animate-bounce" />
-                                <span className="text-[9px] font-mono font-bold tracking-widest">{slot.label}</span>
-                                <input type="file" className="hidden" onChange={slot.upload} />
+                            <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer text-[#333] active:text-[#FFEA00] md:hover:text-[#FFEA00] active:bg-[#111] md:group-hover:bg-[#111]">
+                                <slot.icon className="w-5 h-5 md:w-6 md:h-6 mb-1 md:mb-2" />
+                                <span className="text-[8px] md:text-[9px] font-mono font-bold tracking-widest">{slot.label}</span>
+                                <input type="file" accept="image/*" className="hidden" onChange={slot.upload} />
                             </label>
                         )}
                         {/* Decorative corner */}
@@ -273,14 +273,14 @@ const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenera
       </div>
 
       {/* 3. Sticky Button */}
-      <div className="shrink-0 p-4 bg-black border-t-4 border-double border-[#333] z-50 relative">
+      <div className="shrink-0 p-3 md:p-4 bg-black border-t-4 border-double border-[#333] z-50 relative">
         <button
           onClick={onGenerate}
           disabled={!state.mainPrompt}
-          className={`w-full h-[60px] flex items-center justify-center gap-2 font-black text-lg uppercase tracking-widest transition-all transform active:scale-95 active:rotate-1 relative group overflow-hidden
+          className={`w-full h-[50px] md:h-[60px] flex items-center justify-center gap-2 font-black text-base md:text-lg uppercase tracking-widest transition-all transform active:scale-95 active:rotate-1 relative group overflow-hidden
             ${!state.mainPrompt 
               ? 'bg-[#222] text-[#555] cursor-not-allowed border-2 border-[#333]' 
-              : 'bg-[#FFEA00] text-black border-2 border-[#FFEA00] hover:bg-white hover:border-white shadow-[6px_6px_0px_#EE4035]'
+              : 'bg-[#FFEA00] text-black border-2 border-[#FFEA00] md:hover:bg-white md:hover:border-white shadow-[6px_6px_0px_#EE4035]'
             }`}
         >
           {activeJobs > 0 ? (
@@ -288,7 +288,7 @@ const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenera
           ) : (
             <>
               <span className="relative z-10 mix-blend-multiply">INITIATE</span>
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+              <div className="absolute inset-0 bg-white/20 translate-y-full md:group-hover:translate-y-0 transition-transform duration-300"></div>
             </>
           )}
         </button>

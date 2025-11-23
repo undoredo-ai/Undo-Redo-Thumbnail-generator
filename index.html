@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>dorksense - ACID_MODE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,6 +14,16 @@
       /* Brand Fonts */
       .font-brand { font-family: 'Montserrat', sans-serif; }
       .font-mono { font-family: 'Space Mono', monospace; }
+
+      /* Mobile Touch Improvements */
+      * {
+        -webkit-tap-highlight-color: rgba(255, 234, 0, 0.3);
+        -webkit-touch-callout: none;
+      }
+      
+      input, textarea, select, button {
+        font-size: 16px; /* Prevents iOS zoom on focus */
+      }
 
       /* --- ACID GRAPHICS ENGINE --- */
       

@@ -26,6 +26,7 @@ const App: React.FC = () => {
   const [apiKey, setApiKey] = useState<string>('');
   const [hasValidKey, setHasValidKey] = useState(false);
   const [manualKeyInput, setManualKeyInput] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const progressInterval = useRef<number | null>(null);
 
@@ -173,22 +174,22 @@ const App: React.FC = () => {
   
   if (!hasValidKey) {
       return (
-          <div className="flex h-screen w-screen bg-[#050505] items-center justify-center relative overflow-hidden font-brand">
+          <div className="flex h-screen w-screen bg-[#050505] items-center justify-center relative overflow-hidden font-brand p-4">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiIGZpbGw9IiMwMDAiLz4KPHBhdGggZD0iTTAgNDBMMTQwIDBoNDB2NDBIMHoiIGZpbGw9IiMzMzMiIGZpbGwtb3BhY2l0eT0iMC4xIi8+Cjwvc3ZnPg==')] opacity-20"></div>
               
-              <div className="relative bg-black border-4 border-[#FFEA00] p-12 max-w-lg text-center shadow-[10px_10px_0px_#EE4035] transform rotate-1 z-10">
-                  <div className="absolute -top-6 -left-6 bg-[#EE4035] text-white font-black px-4 py-2 text-xl rotate-[-10deg] shadow-[4px_4px_0_#000]">
+              <div className="relative bg-black border-4 border-[#FFEA00] p-6 md:p-12 max-w-lg w-full text-center shadow-[10px_10px_0px_#EE4035] transform rotate-1 z-10">
+                  <div className="absolute -top-4 md:-top-6 -left-4 md:-left-6 bg-[#EE4035] text-white font-black px-3 md:px-4 py-1 md:py-2 text-base md:text-xl rotate-[-10deg] shadow-[4px_4px_0_#000]">
                       ACCESS_DENIED
                   </div>
 
                   <img 
                     src="https://iamishir.com/wp-content/uploads/2025/11/undo-redo-ai.png" 
                     alt="Logo" 
-                    className="h-12 mx-auto mb-8 invert mix-blend-screen"
+                    className="h-10 md:h-12 mx-auto mb-6 md:mb-8 invert mix-blend-screen"
                   />
                   
-                  <h1 className="text-4xl font-black text-white mb-4 uppercase tracking-tighter">KEY_MISSING</h1>
-                  <p className="text-lg font-mono text-[#AAA] mb-8">
+                  <h1 className="text-2xl md:text-4xl font-black text-white mb-3 md:mb-4 uppercase tracking-tighter">KEY_MISSING</h1>
+                  <p className="text-sm md:text-lg font-mono text-[#AAA] mb-6 md:mb-8">
                       Inject a valid <span className="text-[#FFEA00]">API_KEY</span> or <span className="text-[#FFEA00]">GEMINI_API_KEY</span> to breach the mainframe.
                   </p>
 
@@ -197,14 +198,14 @@ const App: React.FC = () => {
                       <div className="relative group">
                           <input 
                               type="password"
-                              className="w-full bg-[#111] border-2 border-[#333] p-4 text-[#FFEA00] font-mono outline-none focus:border-[#FFEA00] transition-colors"
+                              className="w-full bg-[#111] border-2 border-[#333] p-3 md:p-4 text-sm md:text-base text-[#FFEA00] font-mono outline-none focus:border-[#FFEA00] transition-colors"
                               placeholder="ENTER_GEMINI_API_KEY"
                               value={manualKeyInput}
                               onChange={(e) => setManualKeyInput(e.target.value)}
                           />
                           <button 
                               onClick={handleManualKeySubmit}
-                              className="w-full mt-2 bg-[#FFEA00] text-black text-lg font-black py-3 border-2 border-black hover:scale-[1.02] transition-transform shadow-[4px_4px_0px_#EE4035]"
+                              className="w-full mt-2 bg-[#FFEA00] text-black text-base md:text-lg font-black py-2 md:py-3 border-2 border-black active:scale-95 transition-transform shadow-[4px_4px_0px_#EE4035]"
                           >
                               ACTIVATE_SESSION
                           </button>
@@ -217,7 +218,7 @@ const App: React.FC = () => {
                       {/* AI Studio Link (Only shows if available or just as fallback action) */}
                       <button 
                         onClick={handleSelectKey}
-                        className="w-full bg-[#222] text-white font-mono text-sm py-2 border border-[#333] hover:bg-[#333]"
+                        className="w-full bg-[#222] text-white font-mono text-xs md:text-sm py-2 border border-[#333] active:bg-[#333]"
                       >
                           LAUNCH_KEY_SELECTOR (AI STUDIO)
                       </button>
@@ -228,14 +229,47 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden font-brand relative bg-transparent">
-      <InputControls 
-        state={state} 
-        setState={setState} 
-        isGenerating={activeJobs > 0} 
-        onGenerate={handleGenerate}
-        activeJobs={activeJobs}
-      />
+    <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden font-brand relative bg-transparent">
+      {/* Mobile Menu Toggle */}
+      <button
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        className="md:hidden fixed top-4 left-4 z-[60] bg-[#FFEA00] text-black p-3 border-2 border-black shadow-[4px_4px_0_#EE4035] active:scale-95 transition-transform"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {mobileMenuOpen ? (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          ) : (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          )}
+        </svg>
+      </button>
+
+      {/* Mobile Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/80 z-40 backdrop-blur-sm"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Input Controls - Slide in on mobile */}
+      <div className={`
+        fixed md:relative inset-y-0 left-0 z-50 md:z-30
+        transform transition-transform duration-300 ease-in-out
+        ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
+        <InputControls 
+          state={state} 
+          setState={setState} 
+          isGenerating={activeJobs > 0} 
+          onGenerate={() => {
+            handleGenerate();
+            setMobileMenuOpen(false);
+          }}
+          activeJobs={activeJobs}
+        />
+      </div>
+
       <ImageDisplay 
         gallery={gallery}
         onDownload={handleDownload}
