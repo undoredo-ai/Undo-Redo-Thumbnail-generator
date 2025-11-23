@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import LandingPage from './components/LandingPage';
 import InputControls from './components/InputControls';
 import ImageDisplay from './components/ImageDisplay';
 import { GeneratorState, AspectRatio, GalleryItem } from './types';
@@ -35,6 +36,9 @@ const App: React.FC = () => {
   const [authUsername, setAuthUsername] = useState('');
   const [authPassword, setAuthPassword] = useState('');
   
+  // Tool selection state
+  const [selectedTool, setSelectedTool] = useState<string | null>(null);
+  
   const progressInterval = useRef<number | null>(null);
 
   // Check if user is already authenticated
@@ -44,6 +48,10 @@ const App: React.FC = () => {
       setIsAuthenticated(true);
     }
   }, []);
+
+  const handleToolSelect = (toolId: string) => {
+    setSelectedTool(toolId);
+  };
 
   useEffect(() => {
       const checkKey = async () => {
@@ -322,6 +330,11 @@ const App: React.FC = () => {
     }
   };
   
+  // Show landing page if no tool is selected
+  if (!selectedTool) {
+    return <LandingPage onSelectTool={handleToolSelect} />;
+  }
+
   if (!hasValidKey) {
       return (
           <div className="flex h-screen w-screen bg-[#050505] items-center justify-center relative overflow-hidden font-brand p-4">
@@ -445,6 +458,20 @@ const App: React.FC = () => {
       )}
 
       <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden font-brand relative bg-transparent">
+        {/* Back to Home Button - Bottom left on mobile, Top right on desktop */}
+        <button
+          onClick={() => setSelectedTool(null)}
+          className="fixed bottom-6 left-6 md:top-4 md:bottom-auto md:left-auto md:right-4 z-[60] bg-black text-[#FFEA00] p-3 md:px-4 md:py-2 border-2 border-[#FFEA00] active:scale-95 md:hover:bg-[#FFEA00] md:hover:text-black transition-all font-mono text-xs md:text-sm font-bold shadow-[4px_4px_0_#EE4035] rounded-full md:rounded-none"
+          aria-label="Back to home"
+        >
+          <span className="flex items-center gap-2">
+            <svg className="w-5 h-5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <span className="hidden md:inline">HOME</span>
+          </span>
+        </button>
+
         {/* Mobile Menu Toggle - Floating Action Button */}
       {!mobileMenuOpen && (
         <button
