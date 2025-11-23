@@ -116,6 +116,18 @@ const App: React.FC = () => {
   }, []);
 
   const handleGenerate = async () => {
+    // Validate inputs
+    if (!state.mainPrompt || state.mainPrompt.trim().length === 0) {
+      alert('Please enter a scene description to generate an image.');
+      return;
+    }
+
+    if (!apiKey) {
+      alert('API key is missing. Please refresh the page.');
+      setHasValidKey(false);
+      return;
+    }
+
     const count = Math.max(1, Math.min(4, state.generationCount));
     const newItems: GalleryItem[] = Array.from({ length: count }).map(() => ({
         id: Math.random().toString(36).substr(2, 9),
@@ -142,9 +154,16 @@ const App: React.FC = () => {
             setGallery(prev => prev.map(g => g.id === item.id ? successItem : g));
         } catch (err: any) {
             console.error(`Generation failed`, err);
-            const errorItem: GalleryItem = { ...generatingItem, status: 'error', error: err.message || 'Generation Failed', progress: 100 };
+            const errorMessage = err.message || err.toString() || 'Generation Failed';
+            const errorItem: GalleryItem = { ...generatingItem, status: 'error', error: errorMessage, progress: 100 };
             await saveGalleryItem(errorItem);
             setGallery(prev => prev.map(g => g.id === item.id ? errorItem : g));
+            
+            // Show alert on mobile for better visibility
+            if (window.innerWidth < 768) {
+                alert(`Generation Error: ${errorMessage}`);
+            }
+            
             if (err.message && err.message.includes("Requested entity was not found")) setHasValidKey(false);
         } finally {
             setActiveJobs(prev => Math.max(0, prev - 1));

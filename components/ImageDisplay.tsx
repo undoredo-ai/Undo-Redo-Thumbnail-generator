@@ -32,10 +32,15 @@ const ImageCard: React.FC<{ item: GalleryItem; onClick: () => void; onDownload: 
             )}
 
             {item.status === 'error' && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#1a0505] z-10 border-4 border-[#EE4035]">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#1a0505] z-10 border-4 border-[#EE4035] p-4">
                     <Icons.Alert className="w-12 h-12 text-[#EE4035] mb-2 animate-ping" />
-                    <span className="bg-[#EE4035] text-white px-2 py-1 font-mono text-xs uppercase font-bold rotate-[-2deg]">SYSTEM_CRASH</span>
-                    <button onClick={() => onRemove(item.id)} className="absolute top-2 right-2 text-[#EE4035] hover:text-white">
+                    <span className="bg-[#EE4035] text-white px-2 py-1 font-mono text-xs uppercase font-bold rotate-[-2deg] mb-2">SYSTEM_CRASH</span>
+                    {item.error && (
+                        <p className="text-[#EE4035] text-[10px] font-mono text-center px-2 max-h-20 overflow-y-auto">
+                            {item.error}
+                        </p>
+                    )}
+                    <button onClick={() => onRemove(item.id)} className="absolute top-2 right-2 text-[#EE4035] active:text-white md:hover:text-white">
                         <Icons.Trash className="w-5 h-5" />
                     </button>
                 </div>

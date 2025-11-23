@@ -36,6 +36,13 @@ async function retryOperation<T>(
  * Returns the base64 image string.
  */
 export const generateSingleImage = async (state: GeneratorState, apiKey?: string): Promise<string> => {
+  console.log('🎨 Starting image generation...', {
+    hasApiKey: !!apiKey,
+    modelId: state.modelId,
+    hasPrompt: !!state.mainPrompt,
+    aspectRatio: state.aspectRatio
+  });
+
   // Always get a fresh client using the provided key
   const ai = getClient(apiKey);
 
@@ -113,11 +120,15 @@ export const generateSingleImage = async (state: GeneratorState, apiKey?: string
   }
 
   const performRequest = async () => {
+      console.log('📡 Sending request to Gemini API...', { modelId, partsCount: parts.length });
+      
       const response = await ai.models.generateContent({
         model: modelId,
         contents: { parts },
         config: config
       });
+
+      console.log('✅ Received response from Gemini API');
 
       // 4. Parse Response
       const candidates = response.candidates;
