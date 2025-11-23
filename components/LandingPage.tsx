@@ -34,7 +34,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onSelectTool }) => {
   ];
 
   return (
-    <div className="min-h-screen w-screen bg-[#050505] font-brand relative overflow-auto">
+    <div className="min-h-screen w-screen bg-[#050505] font-brand relative overflow-y-auto overflow-x-hidden">
       {/* Background Effects */}
       <div className="fixed inset-0 bg-warp-grid opacity-30 pointer-events-none"></div>
       <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiIGZpbGw9IiMwMDAiLz4KPHBhdGggZD0iTTAgNDBMMTQwIDBoNDB2NDBIMHoiIGZpbGw9IiMzMzMiIGZpbGwtb3BhY2l0eT0iMC4xIi8+Cjwvc3ZnPg==')] opacity-20 pointer-events-none"></div>

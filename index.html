@@ -240,6 +240,12 @@
         animation: glitch 0.3s infinite;
       }
 
+      /* Touch Active State for Mobile */
+      .touch-active {
+        transform: scale(0.95);
+        filter: brightness(1.2);
+      }
+
       /* Safari-specific fixes */
       @supports (-webkit-touch-callout: none) {
         /* iOS Safari */
@@ -376,7 +382,7 @@
 }
 </script>
 </head>
-  <body class="bg-[#050505] text-white antialiased overflow-hidden font-brand selection:bg-[#EE4035] selection:text-white">
+  <body class="bg-[#050505] text-white antialiased font-brand selection:bg-[#EE4035] selection:text-white">
     <!-- Futuristic Cursor -->
     <div id="cursor-glow"></div>
     <div id="cursor-trail"></div>
@@ -397,7 +403,7 @@
       </defs>
     </svg>
 
-    <div id="root" class="h-full w-full"></div>
+    <div id="root" class="min-h-screen w-full"></div>
     
     <!-- Cursor Tracking Script -->
     <script>
@@ -467,6 +473,42 @@
           playSound(1200, 0.1, 0.2); // Click sound
         }
       });
+
+      // Mobile touch events for sound
+      let audioContextInitialized = false;
+      
+      const initAudioOnTouch = () => {
+        if (!audioContextInitialized) {
+          // Initialize audio context on first touch (required for iOS)
+          try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            audioContext.resume();
+            audioContextInitialized = true;
+          } catch (e) {
+            console.log('Audio context initialization failed');
+          }
+        }
+      };
+
+      // Touch start for hover effect on mobile
+      document.addEventListener('touchstart', (e) => {
+        initAudioOnTouch();
+        
+        const target = e.target;
+        if (target.matches('button, a, [role="button"], .game-button')) {
+          playSound(800, 0.05, 0.1); // Hover sound on touch
+          target.classList.add('touch-active');
+        }
+      }, { passive: true });
+
+      // Touch end for click effect on mobile
+      document.addEventListener('touchend', (e) => {
+        const target = e.target;
+        if (target.matches('button, a, [role="button"], .game-button')) {
+          playSound(1200, 0.1, 0.2); // Click sound on touch end
+          target.classList.remove('touch-active');
+        }
+      }, { passive: true });
 
       // Hide custom cursor on mobile
       if ('ontouchstart' in window) {
