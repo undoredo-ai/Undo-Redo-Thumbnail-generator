@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import LandingPage from './components/LandingPage';
+import UndoRedoFilms from './components/UndoRedoFilms';
 import InputControls from './components/InputControls';
 import ImageDisplay from './components/ImageDisplay';
 import { GeneratorState, AspectRatio, GalleryItem } from './types';
@@ -333,6 +334,11 @@ const App: React.FC = () => {
   // Show landing page if no tool is selected
   if (!selectedTool) {
     return <LandingPage onSelectTool={handleToolSelect} />;
+  }
+
+  // Show Undo Redo Films page
+  if (selectedTool === 'undo-redo-films') {
+    return <UndoRedoFilms onBack={() => setSelectedTool(null)} />;
   }
 
   if (!hasValidKey) {

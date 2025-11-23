@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { UploadedImage, Actor, GeneratorState, AspectRatio } from '../types';
 import { Icons } from './Icon';
 import { STYLE_PRESETS, AVAILABLE_MODELS } from '../constants';
+import StyleSelector from './StyleSelector';
 
 interface InputControlsProps {
   state: GeneratorState;
@@ -15,6 +16,7 @@ interface InputControlsProps {
 
 const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenerating, onGenerate, activeJobs, onClose }) => {
   const [infiniteMode, setInfiniteMode] = useState(false);
+  const [showStyleSelector, setShowStyleSelector] = useState(false);
 
   const handleTextChange = (field: keyof GeneratorState, value: string | number) => {
     setState(prev => ({ ...prev, [field]: value }));
@@ -322,20 +324,34 @@ const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenera
             <div className="bg-[#EE4035] text-white text-xs font-black inline-block px-2 py-0.5 shadow-[4px_4px_0_#333]">
                 STYLE_MATRIX
             </div>
-            <div className="relative border-2 border-[#333] hover:border-[#EE4035] transition-colors bg-black">
-                <select
-                    className="w-full bg-transparent p-3 text-xs text-white font-mono outline-none appearance-none cursor-pointer"
-                    value={state.stylePreset}
-                    onChange={(e) => handleTextChange('stylePreset', e.target.value)}
-                >
-                    {STYLE_PRESETS.map((style, i) => (
-                        <option key={i} value={style}>{style}</option>
-                    ))}
-                </select>
-                <div className="absolute top-0 right-0 h-full w-8 bg-[#EE4035] flex items-center justify-center pointer-events-none">
-                     <Icons.Wand2 className="w-4 h-4 text-black" />
+            
+            {/* Current Style Display */}
+            <button
+                onClick={() => setShowStyleSelector(true)}
+                className="w-full relative border-2 border-[#333] hover:border-[#FFEA00] transition-colors bg-black p-3 text-left game-button group"
+            >
+                <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                        <div className="text-[9px] text-[#666] font-mono mb-1">SELECTED STYLE</div>
+                        <div className="text-xs text-white font-mono line-clamp-1">
+                            {state.stylePreset.split('(')[0].trim()}
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Icons.Wand2 className="w-4 h-4 text-[#FFEA00] group-hover:animate-spin" />
+                        <span className="text-[10px] text-[#FFEA00] font-bold">CHANGE</span>
+                    </div>
                 </div>
-            </div>
+            </button>
+
+            {/* Style Selector Modal */}
+            {showStyleSelector && (
+                <StyleSelector
+                    currentStyle={state.stylePreset}
+                    onSelect={(style) => handleTextChange('stylePreset', style)}
+                    onClose={() => setShowStyleSelector(false)}
+                />
+            )}
         </div>
 
       </div>

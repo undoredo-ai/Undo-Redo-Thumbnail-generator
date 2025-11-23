@@ -7,6 +7,14 @@ interface LandingPageProps {
 const LandingPage: React.FC<LandingPageProps> = ({ onSelectTool }) => {
   const tools = [
     {
+      id: 'undo-redo-films',
+      name: 'UNDO REDO FILMS',
+      description: 'Explore our collection of AI-generated films and experience the future of storytelling',
+      icon: '🎬',
+      color: '#EE4035',
+      available: true
+    },
+    {
       id: 'thumbnail-generator',
       name: 'THUMBNAIL GENERATOR',
       description: 'Create high-engagement YouTube thumbnails with AI',
@@ -85,11 +93,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onSelectTool }) => {
           <div className="flex justify-center gap-4 md:gap-8 mt-8 flex-wrap">
             <div className="bg-black/60 border-2 border-[#FFEA00] px-4 py-2 backdrop-blur-sm">
               <div className="text-[#FFEA00] text-xs font-mono">TOOLS AVAILABLE</div>
-              <div className="text-white text-2xl font-black">01</div>
+              <div className="text-white text-2xl font-black">02</div>
             </div>
             <div className="bg-black/60 border-2 border-[#EE4035] px-4 py-2 backdrop-blur-sm">
               <div className="text-[#EE4035] text-xs font-mono">COMING SOON</div>
-              <div className="text-white text-2xl font-black">02</div>
+              <div className="text-white text-2xl font-black">01</div>
             </div>
             <div className="bg-black/60 border-2 border-[#FFEA00] px-4 py-2 backdrop-blur-sm coin-icon">
               <div className="text-[#FFEA00] text-xs font-mono">STATUS</div>
@@ -106,15 +114,31 @@ const LandingPage: React.FC<LandingPageProps> = ({ onSelectTool }) => {
               className={`group relative bg-black border-4 hex-pattern ${
                 tool.available ? 'border-[#FFEA00] cursor-pointer holographic game-button' : 'border-[#333] cursor-not-allowed opacity-60'
               } p-6 md:p-8 transition-all duration-300 ${
-                tool.available ? 'hover:scale-105 hover:shadow-[12px_12px_0px_rgba(255,234,0,0.3)] pulse-glow' : ''
-              } ${index % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}
+                tool.available ? 'hover:scale-105 hover:shadow-[12px_12px_0px_rgba(255,234,0,0.3)]' : ''
+              } ${tool.id === 'undo-redo-films' ? 'pulse-glow scale-105 md:scale-110' : ''} ${index % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}
               onClick={() => tool.available && onSelectTool(tool.id)}
+              style={tool.id === 'undo-redo-films' ? {
+                boxShadow: '0 0 30px rgba(238, 64, 53, 0.6), 0 0 60px rgba(255, 234, 0, 0.4), 12px 12px 0px rgba(238, 64, 53, 0.8)',
+                animation: 'pulse-glow 2s ease-in-out infinite, float-trippy 4s ease-in-out infinite'
+              } : {}}
             >
               {/* Level Badge */}
               {tool.available && (
-                <div className="absolute -top-3 -right-3 bg-[#EE4035] text-white text-xs font-black px-3 py-1 rotate-12 border-2 border-black shadow-[2px_2px_0_#000] z-10">
-                  LVL 1
-                </div>
+                tool.id === 'undo-redo-films' ? (
+                  <div 
+                    className="absolute -top-3 -right-3 bg-[#EE4035] text-white text-xs font-black px-3 py-1 rotate-12 border-2 border-black z-10"
+                    style={{
+                      boxShadow: '0 0 15px rgba(238, 64, 53, 0.8), 2px 2px 0 #000',
+                      animation: 'pulse 1.5s ease-in-out infinite'
+                    }}
+                  >
+                    ⭐ FEATURED
+                  </div>
+                ) : (
+                  <div className="absolute -top-3 -right-3 bg-[#EE4035] text-white text-xs font-black px-3 py-1 rotate-12 border-2 border-black shadow-[2px_2px_0_#000] z-10">
+                    LVL 1
+                  </div>
+                )
               )}
 
               {/* Corner Decorations */}
@@ -142,7 +166,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onSelectTool }) => {
               )}
 
               {/* Title */}
-              <h3 className="text-xl md:text-2xl font-black text-white mb-2 uppercase tracking-tight">
+              <h3 
+                className={`text-xl md:text-2xl font-black mb-2 uppercase tracking-tight ${
+                  tool.id === 'undo-redo-films' ? 'text-[#FFEA00]' : 'text-white'
+                }`}
+                style={tool.id === 'undo-redo-films' ? {
+                  textShadow: '0 0 5px rgba(255, 234, 0, 0.5), 0 0 10px rgba(255, 234, 0, 0.3), 0 0 15px rgba(238, 64, 53, 0.2)'
+                } : {}}
+              >
                 {tool.name}
               </h3>
 
@@ -153,12 +184,35 @@ const LandingPage: React.FC<LandingPageProps> = ({ onSelectTool }) => {
 
               {/* Action Button */}
               {tool.available ? (
-                <div className="flex items-center gap-2 text-[#FFEA00] font-bold text-sm group-hover:gap-4 transition-all game-button">
-                  <span className="glitch-hover">▶ LAUNCH TOOL</span>
-                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </div>
+                tool.id === 'undo-redo-films' ? (
+                  <div 
+                    className="relative flex items-center gap-2 text-black font-black text-sm bg-[#FFEA00] px-4 py-2 border-2 border-black group-hover:gap-4 transition-all overflow-hidden"
+                    style={{
+                      boxShadow: '0 0 20px rgba(255, 234, 0, 0.8), 0 0 40px rgba(238, 64, 53, 0.6), 4px 4px 0 #EE4035',
+                      animation: 'pulse 2s ease-in-out infinite'
+                    }}
+                  >
+                    {/* Animated shine effect */}
+                    <div 
+                      className="absolute inset-0 w-full h-full"
+                      style={{
+                        background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent)',
+                        animation: 'shine 3s ease-in-out infinite'
+                      }}
+                    />
+                    <span className="relative z-10 glitch-hover">▶ FEEL IT HERE</span>
+                    <svg className="relative z-10 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                    </svg>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-[#FFEA00] font-bold text-sm group-hover:gap-4 transition-all game-button">
+                    <span className="glitch-hover">▶ LAUNCH TOOL</span>
+                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </div>
+                )
               ) : (
                 <div className="text-[#666] font-bold text-sm flex items-center gap-2">
                   <span className="animate-pulse">🔒</span>
