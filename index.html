@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dorksense - ACID_MODE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+      /* Brand Fonts */
+      .font-brand { font-family: 'Montserrat', sans-serif; }
+      .font-mono { font-family: 'Space Mono', monospace; }
+
+      /* --- ACID GRAPHICS ENGINE --- */
+      
+      /* 1. Global Acid Cursor */
+      body, a, button, input, textarea, select {
+        cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="%23FFEA00" stroke="%23EE4035" stroke-width="2"/><circle cx="16" cy="16" r="2" fill="%23000"/></svg>') 16 16, auto !important;
+      }
+      
+      /* 2. Custom Scrollbar (Liquid) */
+      ::-webkit-scrollbar {
+        width: 12px;
+        background: #000;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: repeating-linear-gradient(
+          45deg,
+          #FFEA00,
+          #FFEA00 10px,
+          #EE4035 10px,
+          #EE4035 20px
+        );
+        border: 2px solid #000;
+      }
+
+      /* 3. SVG Filter Distortions (The "Melt") */
+      .melt-filter {
+        filter: url('#turbulence-filter');
+      }
+      .melt-hover:hover {
+        animation: melt 0.3s forwards;
+      }
+
+      @keyframes melt {
+        0% { filter: none; transform: scale(1); }
+        50% { filter: url('#turbulence-filter'); transform: scale(1.02) skewX(-2deg); }
+        100% { filter: none; transform: scale(1); }
+      }
+
+      /* 4. Hypnotic Animations */
+      @keyframes float-trippy {
+        0% { transform: translate(0, 0) rotate(0deg); }
+        33% { transform: translate(5px, -5px) rotate(1deg); }
+        66% { transform: translate(-5px, 5px) rotate(-1deg); }
+        100% { transform: translate(0, 0) rotate(0deg); }
+      }
+      .animate-float-trippy {
+        animation: float-trippy 3s ease-in-out infinite;
+      }
+
+      @keyframes hue-rotate {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+      }
+      .acid-text {
+        background: linear-gradient(to right, #FFEA00, #EE4035, #FFEA00);
+        -webkit-background-clip: text;
+        color: transparent;
+        background-size: 200% auto;
+        animation: gradient-move 2s linear infinite;
+      }
+      @keyframes gradient-move {
+        0% { background-position: 0% center; }
+        100% { background-position: 200% center; }
+      }
+
+      /* 5. Background Grid Warp */
+      .bg-warp-grid {
+        background-image: 
+          linear-gradient(rgba(255, 234, 0, 0.1) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(238, 64, 53, 0.1) 1px, transparent 1px);
+        background-size: 40px 40px;
+        animation: scroll-grid 20s linear infinite;
+      }
+      @keyframes scroll-grid {
+        0% { background-position: 0 0; }
+        100% { background-position: 40px 40px; }
+      }
+
+      /* 6. Brutalist Utilities */
+      .brutal-border {
+        border: 2px solid #333;
+        box-shadow: 4px 4px 0px #EE4035;
+        transition: all 0.2s;
+      }
+      .brutal-border:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0px #FFEA00;
+        border-color: #FFF;
+      }
+      .brutal-input {
+        background: #000;
+        border-bottom: 2px solid #333;
+        transition: all 0.3s;
+      }
+      .brutal-input:focus {
+        border-bottom: 2px solid #FFEA00;
+        background: #111;
+        letter-spacing: 1px;
+      }
+
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+</head>
+  <body class="bg-[#050505] text-white antialiased overflow-hidden font-brand selection:bg-[#EE4035] selection:text-white">
+    <!-- SVG Filters for Acid Effects -->
+    <svg style="display: none;">
+      <defs>
+        <filter id="turbulence-filter">
+          <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="1" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" />
+        </filter>
+        <filter id="noise-bg">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
+        </filter>
+      </defs>
+    </svg>
+
+    <div id="root" class="h-full w-full"></div>
+    
+    <!-- IMPORTANT: Entry Point for Vercel/Vite -->
+    <script type="module" src="/index.tsx"></script>
+
+    <!-- Trippy Background Layers -->
+    <div class="fixed inset-0 pointer-events-none z-[-1] bg-warp-grid opacity-30"></div>
+    <div class="fixed inset-0 pointer-events-none z-[-2] bg-[#050505]">
+        <div class="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] opacity-5 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+Cjwvc3ZnPg==')] animate-[spin_120s_linear_infinite]"></div>
+    </div>
+  </body>
+</html>
