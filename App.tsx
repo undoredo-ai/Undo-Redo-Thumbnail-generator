@@ -130,8 +130,8 @@ const App: React.FC = () => {
   }, []);
 
   const handleAuthentication = () => {
-    const validUsername = 'test';
-    const validPassword = 'sdgiuhiuhsdg';
+    const validUsername = import.meta.env.VITE_AUTH_USERNAME;
+    const validPassword = import.meta.env.VITE_AUTH_PASSWORD;
 
     if (authUsername === validUsername && authPassword === validPassword) {
       setIsAuthenticated(true);
