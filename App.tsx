@@ -26,7 +26,8 @@ const App: React.FC = () => {
   const [apiKey, setApiKey] = useState<string>('');
   const [hasValidKey, setHasValidKey] = useState(false);
   const [manualKeyInput, setManualKeyInput] = useState('');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Start with menu open on first load so users see the generation form first
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
   
   const progressInterval = useRef<number | null>(null);
 
@@ -230,19 +231,18 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden font-brand relative bg-transparent">
-      {/* Mobile Menu Toggle */}
-      <button
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className="md:hidden fixed top-4 left-4 z-[60] bg-[#FFEA00] text-black p-3 border-2 border-black shadow-[4px_4px_0_#EE4035] active:scale-95 transition-transform"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          {mobileMenuOpen ? (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          ) : (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          )}
-        </svg>
-      </button>
+      {/* Mobile Menu Toggle - Floating Action Button */}
+      {!mobileMenuOpen && (
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          className="md:hidden fixed bottom-6 right-6 z-[60] bg-[#FFEA00] text-black p-4 rounded-full border-4 border-black shadow-[6px_6px_0_#EE4035] active:scale-95 transition-all animate-pulse"
+          aria-label="Open menu"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+      )}
 
       {/* Mobile Overlay */}
       {mobileMenuOpen && (
@@ -267,6 +267,7 @@ const App: React.FC = () => {
             setMobileMenuOpen(false);
           }}
           activeJobs={activeJobs}
+          onClose={() => setMobileMenuOpen(false)}
         />
       </div>
 

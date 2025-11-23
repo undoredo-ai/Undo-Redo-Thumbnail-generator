@@ -10,9 +10,10 @@ interface InputControlsProps {
   isGenerating: boolean;
   onGenerate: () => void;
   activeJobs: number;
+  onClose?: () => void;
 }
 
-const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenerating, onGenerate, activeJobs }) => {
+const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenerating, onGenerate, activeJobs, onClose }) => {
   const [infiniteMode, setInfiniteMode] = useState(false);
 
   const handleTextChange = (field: keyof GeneratorState, value: string | number) => {
@@ -78,9 +79,23 @@ const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenera
              }}
            />
          </div>
-         <div className="flex items-center gap-2 border border-[#333] px-2 py-1 bg-[#111] skew-x-[-10deg]">
-             <div className={`w-3 h-3 rounded-full ${activeJobs > 0 ? 'bg-[#FFEA00] shadow-[0_0_10px_#FFEA00]' : 'bg-[#333]'} animate-pulse`}></div>
-             <span className="text-[10px] font-mono text-white skew-x-[10deg]">SYSTEM.V2</span>
+         
+         {/* Right side - Status or Close button */}
+         <div className="flex items-center gap-2">
+           {onClose && (
+             <button 
+               onClick={onClose}
+               className="md:hidden bg-[#EE4035] text-white p-2 border-2 border-black active:scale-95 transition-transform"
+             >
+               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+               </svg>
+             </button>
+           )}
+           <div className="hidden md:flex items-center gap-2 border border-[#333] px-2 py-1 bg-[#111] skew-x-[-10deg]">
+               <div className={`w-3 h-3 rounded-full ${activeJobs > 0 ? 'bg-[#FFEA00] shadow-[0_0_10px_#FFEA00]' : 'bg-[#333]'} animate-pulse`}></div>
+               <span className="text-[10px] font-mono text-white skew-x-[10deg]">SYSTEM.V2</span>
+           </div>
          </div>
       </div>
 
