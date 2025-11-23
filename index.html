@@ -277,20 +277,64 @@
         cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="%23FFEA00" stroke="%23EE4035" stroke-width="2"/><circle cx="16" cy="16" r="2" fill="%23000"/></svg>') 16 16, auto !important;
       }
       
-      /* 2. Custom Scrollbar (Liquid) */
+      /* 2. Custom Scrollbar (Futuristic Glowing) */
       ::-webkit-scrollbar {
-        width: 12px;
+        width: 14px;
         background: #000;
       }
+      
+      ::-webkit-scrollbar-track {
+        background: linear-gradient(180deg, #0a0a0a 0%, #000 50%, #0a0a0a 100%);
+        border-left: 1px solid #222;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+      }
+      
       ::-webkit-scrollbar-thumb {
-        background: repeating-linear-gradient(
-          45deg,
-          #FFEA00,
-          #FFEA00 10px,
-          #EE4035 10px,
-          #EE4035 20px
+        background: linear-gradient(
+          180deg,
+          #FFEA00 0%,
+          #FFD700 50%,
+          #FFEA00 100%
         );
         border: 2px solid #000;
+        border-radius: 10px;
+        box-shadow: 
+          0 0 10px #FFEA00,
+          0 0 20px rgba(255, 234, 0, 0.5),
+          inset 0 0 10px rgba(255, 255, 255, 0.3);
+        position: relative;
+      }
+      
+      ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(
+          180deg,
+          #FFD700 0%,
+          #FFEA00 50%,
+          #FFD700 100%
+        );
+        box-shadow: 
+          0 0 15px #FFEA00,
+          0 0 30px rgba(255, 234, 0, 0.8),
+          inset 0 0 15px rgba(255, 255, 255, 0.5);
+      }
+      
+      ::-webkit-scrollbar-thumb:active {
+        background: linear-gradient(
+          180deg,
+          #EE4035 0%,
+          #FFEA00 50%,
+          #EE4035 100%
+        );
+        box-shadow: 
+          0 0 20px #EE4035,
+          0 0 40px rgba(238, 64, 53, 0.8),
+          inset 0 0 20px rgba(255, 255, 255, 0.6);
+      }
+      
+      /* Firefox Scrollbar */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: #FFEA00 #000;
       }
 
       /* 3. SVG Filter Distortions (The "Melt") */

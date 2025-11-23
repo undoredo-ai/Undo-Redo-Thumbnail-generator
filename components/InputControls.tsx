@@ -20,7 +20,7 @@ const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenera
     setState(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'actor' | 'reference') => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'actor' | 'reference' | 'logo') => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       
@@ -41,6 +41,8 @@ const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenera
         if (type === 'actor') {
           const newActor: Actor = { ...newImage, emotion: '' };
           setState(prev => ({ ...prev, actors: [...prev.actors, newActor] }));
+        } else if (type === 'logo') {
+          setState(prev => ({ ...prev, logo: newImage }));
         } else {
           setState(prev => ({ ...prev, references: [...prev.references, newImage] }));
         }
@@ -130,32 +132,83 @@ const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenera
                 ACTION INJECTION
              </div>
              
-             <div className="grid grid-cols-3 gap-2 md:gap-4">
-                 {[
-                   { id: 'actor', label: 'ACTOR', icon: Icons.User, data: state.actors[0], remove: () => removeImage(state.actors[0].id, 'actor'), upload: (e: any) => handleFileUpload(e, 'actor') },
-                   { id: 'ref', label: 'REF_IMG', icon: Icons.Image, data: state.references[0], remove: () => removeImage(state.references[0].id, 'reference'), upload: (e: any) => handleFileUpload(e, 'reference') },
-                   { id: 'logo', label: 'LOGO', icon: Icons.Star, data: state.references[1], remove: () => removeImage(state.references[1].id, 'reference'), upload: (e: any) => handleFileUpload(e, 'reference') }
-                 ].map((slot, i) => (
-                    <div key={i} className="aspect-square bg-black border-2 border-dashed border-[#333] active:border-[#FFEA00] md:hover:border-[#FFEA00] md:hover:border-solid transition-all relative group overflow-hidden md:hover:rotate-1 md:hover:scale-105 duration-300">
-                        {slot.data ? (
-                            <>
-                                <img src={slot.data.previewUrl} className="w-full h-full object-cover filter contrast-125 grayscale md:group-hover:grayscale-0 transition-all" alt="upload" />
-                                <button onClick={slot.remove} className="absolute inset-0 flex items-center justify-center bg-black/80 opacity-0 md:group-hover:opacity-100 active:opacity-100 transition-opacity">
-                                    <Icons.Trash className="w-5 h-5 md:w-6 md:h-6 text-[#EE4035]" />
-                                </button>
-                            </>
-                        ) : (
-                            <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer text-[#333] active:text-[#FFEA00] md:hover:text-[#FFEA00] active:bg-[#111] md:group-hover:bg-[#111]">
-                                <slot.icon className="w-5 h-5 md:w-6 md:h-6 mb-1 md:mb-2" />
-                                <span className="text-[8px] md:text-[9px] font-mono font-bold tracking-widest">{slot.label}</span>
-                                <input type="file" accept="image/*" className="hidden" onChange={slot.upload} />
-                            </label>
-                        )}
-                        {/* Decorative corner */}
-                        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#FFEA00]"></div>
-                        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#EE4035]"></div>
-                    </div>
-                 ))}
+             {/* Actors Grid - Multiple uploads */}
+             <div className="space-y-2">
+               <div className="text-[10px] text-[#FFEA00] font-mono">ACTORS ({state.actors.length}/5)</div>
+               <div className="grid grid-cols-3 gap-2 md:gap-3">
+                 {Array.from({ length: 5 }).map((_, i) => {
+                   const actor = state.actors[i];
+                   return (
+                     <div key={i} className="aspect-square bg-black border-2 border-dashed border-[#333] active:border-[#FFEA00] md:hover:border-[#FFEA00] md:hover:border-solid transition-all relative group overflow-hidden md:hover:rotate-1 md:hover:scale-105 duration-300">
+                       {actor ? (
+                         <>
+                           <img src={actor.previewUrl} className="w-full h-full object-cover filter contrast-125 grayscale md:group-hover:grayscale-0 transition-all" alt="actor" />
+                           <button onClick={() => removeImage(actor.id, 'actor')} className="absolute inset-0 flex items-center justify-center bg-black/80 opacity-0 md:group-hover:opacity-100 active:opacity-100 transition-opacity">
+                             <Icons.Trash className="w-5 h-5 md:w-6 md:h-6 text-[#EE4035]" />
+                           </button>
+                         </>
+                       ) : (
+                         <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer text-[#333] active:text-[#FFEA00] md:hover:text-[#FFEA00] active:bg-[#111] md:group-hover:bg-[#111]">
+                           <Icons.User className="w-5 h-5 md:w-6 md:h-6 mb-1" />
+                           <span className="text-[8px] md:text-[9px] font-mono font-bold tracking-widest">ACTOR</span>
+                           <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, 'actor')} />
+                         </label>
+                       )}
+                       <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#FFEA00]"></div>
+                       <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#EE4035]"></div>
+                     </div>
+                   );
+                 })}
+               </div>
+             </div>
+
+             {/* Reference & Logo - Single uploads */}
+             <div className="grid grid-cols-2 gap-2 md:gap-4">
+               {/* Reference Image */}
+               <div className="space-y-2">
+                 <div className="text-[10px] text-[#666] font-mono">REFERENCE (Style Only)</div>
+                 <div className="aspect-square bg-black border-2 border-dashed border-[#333] active:border-[#FFEA00] md:hover:border-[#FFEA00] md:hover:border-solid transition-all relative group overflow-hidden">
+                   {state.references[0] ? (
+                     <>
+                       <img src={state.references[0].previewUrl} className="w-full h-full object-cover filter contrast-125 grayscale md:group-hover:grayscale-0 transition-all" alt="reference" />
+                       <button onClick={() => removeImage(state.references[0].id, 'reference')} className="absolute inset-0 flex items-center justify-center bg-black/80 opacity-0 md:group-hover:opacity-100 active:opacity-100 transition-opacity">
+                         <Icons.Trash className="w-5 h-5 md:w-6 md:h-6 text-[#EE4035]" />
+                       </button>
+                     </>
+                   ) : (
+                     <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer text-[#333] active:text-[#FFEA00] md:hover:text-[#FFEA00] active:bg-[#111] md:group-hover:bg-[#111]">
+                       <Icons.Image className="w-5 h-5 md:w-6 md:h-6 mb-1 md:mb-2" />
+                       <span className="text-[8px] md:text-[9px] font-mono font-bold tracking-widest">REF_IMG</span>
+                       <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, 'reference')} />
+                     </label>
+                   )}
+                   <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#FFEA00]"></div>
+                   <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#EE4035]"></div>
+                 </div>
+               </div>
+
+               {/* Logo */}
+               <div className="space-y-2">
+                 <div className="text-[10px] text-[#666] font-mono">LOGO (Overlay)</div>
+                 <div className="aspect-square bg-black border-2 border-dashed border-[#333] active:border-[#FFEA00] md:hover:border-[#FFEA00] md:hover:border-solid transition-all relative group overflow-hidden">
+                   {state.logo ? (
+                     <>
+                       <img src={state.logo.previewUrl} className="w-full h-full object-contain p-2 filter md:group-hover:brightness-125 transition-all" alt="logo" />
+                       <button onClick={() => setState(prev => ({ ...prev, logo: undefined }))} className="absolute inset-0 flex items-center justify-center bg-black/80 opacity-0 md:group-hover:opacity-100 active:opacity-100 transition-opacity">
+                         <Icons.Trash className="w-5 h-5 md:w-6 md:h-6 text-[#EE4035]" />
+                       </button>
+                     </>
+                   ) : (
+                     <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer text-[#333] active:text-[#FFEA00] md:hover:text-[#FFEA00] active:bg-[#111] md:group-hover:bg-[#111]">
+                       <Icons.Star className="w-5 h-5 md:w-6 md:h-6 mb-1 md:mb-2" />
+                       <span className="text-[8px] md:text-[9px] font-mono font-bold tracking-widest">LOGO</span>
+                       <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, 'logo')} />
+                     </label>
+                   )}
+                   <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#FFEA00]"></div>
+                   <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#EE4035]"></div>
+                 </div>
+               </div>
              </div>
         </div>
 

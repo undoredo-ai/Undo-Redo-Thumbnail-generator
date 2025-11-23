@@ -79,7 +79,12 @@ export const generateSingleImage = async (state: GeneratorState, apiKey?: string
 
   if (state.references.length > 0) {
     prompt += `\n\nREFERENCE MATERIAL:
-    I have provided ${state.references.length} reference image(s). Use them for inspiration regarding color palette, lighting, and composition layout.`;
+    I have provided ${state.references.length} reference image(s). Use them ONLY for inspiration regarding color palette, lighting, and composition layout. DO NOT recreate or copy these images directly - use them as style reference only.`;
+  }
+
+  if (state.logo) {
+    prompt += `\n\nLOGO OVERLAY:
+    I have provided a logo image. You MUST overlay this logo on the final thumbnail. Place it in a prominent but non-intrusive position (typically bottom-right or top-left corner). Ensure the logo is clearly visible and maintains its original appearance.`;
   }
 
   // 2. Build the contents array
@@ -104,6 +109,16 @@ export const generateSingleImage = async (state: GeneratorState, apiKey?: string
       },
     });
   });
+
+  // Add Logo
+  if (state.logo) {
+    parts.push({
+      inlineData: {
+        mimeType: state.logo.mimeType,
+        data: state.logo.base64Data,
+      },
+    });
+  }
 
   // 3. Configure API
   const modelId = state.modelId || 'gemini-2.5-flash-image'; 

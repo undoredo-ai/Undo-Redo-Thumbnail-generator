@@ -79,7 +79,12 @@ const ImageDisplay: React.FC<ImageDisplayProps> = ({ gallery, onDownload, onRemo
   const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
 
   return (
-    <div className="flex-1 h-full relative flex flex-col font-brand z-10 overflow-hidden">
+    <div className="flex-1 h-full relative flex flex-col font-brand z-10 overflow-hidden bg-[#050505]">
+      {/* Single Clean Grid Background */}
+      <div className="absolute inset-0 pointer-events-none opacity-20" style={{
+        backgroundImage: 'linear-gradient(rgba(255, 234, 0, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 234, 0, 0.1) 1px, transparent 1px)',
+        backgroundSize: '40px 40px'
+      }}></div>
       
       {/* Header */}
       <div className="h-[80px] md:h-[100px] flex items-end justify-between px-4 md:px-8 pb-3 md:pb-4 shrink-0 z-20">

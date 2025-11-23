@@ -25,6 +25,7 @@ export interface GeneratorState {
   stylePreset: string;
   actors: Actor[];
   references: UploadedImage[];
+  logo?: UploadedImage; // Optional logo to overlay on thumbnail
   imageResolution: '1K' | '2K' | '4K';
   generationCount: number;
 }
