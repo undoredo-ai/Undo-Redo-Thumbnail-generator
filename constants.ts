@@ -1,4 +1,5 @@
 export const STYLE_PRESETS = [
+  "None (No Style Applied)",
   "Mr. Beast Style (High Saturation, Shocked, Big Text)",
   "Vlogger Reaction (Close-up, Blur Background, Emoji)",
   "Gaming Cinematic (Dark, Neon, Action-Oriented)",
