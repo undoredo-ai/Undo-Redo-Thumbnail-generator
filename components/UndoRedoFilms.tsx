@@ -363,9 +363,12 @@ const UndoRedoFilms: React.FC<UndoRedoFilmsProps> = ({ onBack }) => {
                     <p className="text-xs md:text-sm text-white font-mono mb-3">
                       Want to create your own AI film? Get in touch with us!
                     </p>
-                    <button className="w-full bg-[#FFEA00] text-black text-sm font-black py-2 px-4 border-2 border-black hover:bg-[#EE4035] hover:text-white transition-all shadow-[4px_4px_0_#000] active:scale-95">
+                    <a 
+                      href="mailto:hello@undoredo.ai"
+                      className="block w-full bg-[#FFEA00] text-black text-sm font-black py-2 px-4 border-2 border-black hover:bg-[#EE4035] hover:text-white transition-all shadow-[4px_4px_0_#000] active:scale-95 text-center"
+                    >
                       CONTACT US →
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>
