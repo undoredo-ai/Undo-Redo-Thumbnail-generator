@@ -29,7 +29,21 @@ const App: React.FC = () => {
   // Start with menu open on first load so users see the generation form first
   const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
   
+  // Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authUsername, setAuthUsername] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  
   const progressInterval = useRef<number | null>(null);
+
+  // Check if user is already authenticated
+  useEffect(() => {
+    const authStatus = localStorage.getItem('isAuthenticated');
+    if (authStatus === 'true') {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   useEffect(() => {
       const checkKey = async () => {
@@ -115,6 +129,68 @@ const App: React.FC = () => {
       return () => { if (progressInterval.current) clearInterval(progressInterval.current); };
   }, []);
 
+  const handleAuthentication = () => {
+    const validUsername = 'test';
+    const validPassword = 'sdgiuhiuhsdg';
+
+    if (authUsername === validUsername && authPassword === validPassword) {
+      setIsAuthenticated(true);
+      localStorage.setItem('isAuthenticated', 'true');
+      setShowAuthModal(false);
+      setAuthUsername('');
+      setAuthPassword('');
+      // Proceed with generation
+      proceedWithGeneration();
+    } else {
+      alert('Invalid credentials. Please try again.');
+      setAuthPassword('');
+    }
+  };
+
+  const proceedWithGeneration = async () => {
+    const count = Math.max(1, Math.min(4, state.generationCount));
+    const newItems: GalleryItem[] = Array.from({ length: count }).map(() => ({
+        id: Math.random().toString(36).substr(2, 9),
+        status: 'queued',
+        timestamp: Date.now(),
+        settings: { ...state },
+        progress: 0
+    }));
+
+    setGallery(prev => [...newItems, ...prev]);
+    setActiveJobs(prev => prev + count);
+    await Promise.all(newItems.map(item => saveGalleryItem(item)));
+
+    newItems.forEach(async (item) => {
+        setGallery(prev => prev.map(g => g.id === item.id ? { ...g, status: 'generating' } : g));
+        const generatingItem = { ...item, status: 'generating' as const };
+        await saveGalleryItem(generatingItem);
+
+        try {
+            // Pass the API key explicitly
+            const imageUrl = await generateSingleImage(item.settings, apiKey);
+            const successItem: GalleryItem = { ...generatingItem, status: 'success', imageUrl: imageUrl, progress: 100 };
+            await saveGalleryItem(successItem);
+            setGallery(prev => prev.map(g => g.id === item.id ? successItem : g));
+        } catch (err: any) {
+            console.error(`Generation failed`, err);
+            const errorMessage = err.message || err.toString() || 'Generation Failed';
+            const errorItem: GalleryItem = { ...generatingItem, status: 'error', error: errorMessage, progress: 100 };
+            await saveGalleryItem(errorItem);
+            setGallery(prev => prev.map(g => g.id === item.id ? errorItem : g));
+            
+            // Show alert on mobile for better visibility
+            if (window.innerWidth < 768) {
+                alert(`Generation Error: ${errorMessage}`);
+            }
+            
+            if (err.message && err.message.includes("Requested entity was not found")) setHasValidKey(false);
+        } finally {
+            setActiveJobs(prev => Math.max(0, prev - 1));
+        }
+    });
+  };
+
   const handleGenerate = async () => {
     // Validate inputs
     if (!state.mainPrompt || state.mainPrompt.trim().length === 0) {
@@ -125,6 +201,12 @@ const App: React.FC = () => {
     if (!apiKey) {
       alert('API key is missing. Please refresh the page.');
       setHasValidKey(false);
+      return;
+    }
+
+    // Check authentication
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
       return;
     }
 
@@ -249,8 +331,73 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden font-brand relative bg-transparent">
-      {/* Mobile Menu Toggle - Floating Action Button */}
+    <>
+      {/* Authentication Modal */}
+      {showAuthModal && (
+        <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 backdrop-blur-xl animate-in fade-in zoom-in duration-300">
+          <div className="relative bg-black border-4 border-[#FFEA00] p-6 md:p-8 max-w-md w-full shadow-[10px_10px_0px_#EE4035] transform rotate-1">
+            <div className="absolute -top-4 -left-4 bg-[#EE4035] text-white font-black px-3 py-1 text-sm rotate-[-10deg] shadow-[4px_4px_0_#000]">
+              AUTH_REQUIRED
+            </div>
+
+            <button 
+              onClick={() => {
+                setShowAuthModal(false);
+                setAuthUsername('');
+                setAuthPassword('');
+              }}
+              className="absolute top-4 right-4 text-white hover:text-[#EE4035] transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <h2 className="text-2xl md:text-3xl font-black text-white mb-2 uppercase tracking-tighter mt-4">
+              LOGIN_REQUIRED
+            </h2>
+            <p className="text-sm font-mono text-[#AAA] mb-6">
+              Enter credentials to generate images
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs text-[#666] font-mono block mb-2">USERNAME</label>
+                <input 
+                  type="text"
+                  className="w-full bg-[#111] border-2 border-[#333] p-3 text-sm text-[#FFEA00] font-mono outline-none focus:border-[#FFEA00] transition-colors"
+                  placeholder="Enter username"
+                  value={authUsername}
+                  onChange={(e) => setAuthUsername(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-[#666] font-mono block mb-2">PASSWORD</label>
+                <input 
+                  type="password"
+                  className="w-full bg-[#111] border-2 border-[#333] p-3 text-sm text-[#FFEA00] font-mono outline-none focus:border-[#FFEA00] transition-colors"
+                  placeholder="Enter password"
+                  value={authPassword}
+                  onChange={(e) => setAuthPassword(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
+                />
+              </div>
+
+              <button 
+                onClick={handleAuthentication}
+                className="w-full bg-[#FFEA00] text-black text-base font-black py-3 border-2 border-black active:scale-95 transition-transform shadow-[4px_4px_0px_#EE4035]"
+              >
+                AUTHENTICATE
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden font-brand relative bg-transparent">
+        {/* Mobile Menu Toggle - Floating Action Button */}
       {!mobileMenuOpen && (
         <button
           onClick={() => setMobileMenuOpen(true)}
@@ -297,6 +444,7 @@ const App: React.FC = () => {
         onClearAll={handleClearAll}
       />
     </div>
+    </>
   );
 };
 
