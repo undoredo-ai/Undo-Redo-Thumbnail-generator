@@ -292,10 +292,10 @@ const InputControls: React.FC<InputControlsProps> = ({ state, setState, isGenera
         <button
           onClick={onGenerate}
           disabled={!state.mainPrompt}
-          className={`w-full h-[50px] md:h-[60px] flex items-center justify-center gap-2 font-black text-base md:text-lg uppercase tracking-widest transition-all transform active:scale-95 active:rotate-1 relative group overflow-hidden
+          className={`w-full h-[50px] md:h-[60px] flex items-center justify-center gap-2 font-black text-base md:text-lg uppercase tracking-widest transition-all transform active:scale-95 active:rotate-1 relative group overflow-hidden game-button
             ${!state.mainPrompt 
               ? 'bg-[#222] text-[#555] cursor-not-allowed border-2 border-[#333]' 
-              : 'bg-[#FFEA00] text-black border-2 border-[#FFEA00] md:hover:bg-white md:hover:border-white shadow-[6px_6px_0px_#EE4035]'
+              : 'bg-[#FFEA00] text-black border-2 border-[#FFEA00] md:hover:bg-white md:hover:border-white shadow-[6px_6px_0px_#EE4035] pulse-glow'
             }`}
         >
           {activeJobs > 0 ? (
