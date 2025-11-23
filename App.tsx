@@ -253,13 +253,61 @@ const App: React.FC = () => {
     });
   };
 
-  const handleDownload = (imageUrl: string) => {
-    const link = document.createElement('a');
-    link.href = imageUrl;
-    link.download = `UnReDO-ACID-${Date.now()}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async (imageUrl: string) => {
+    try {
+      // For mobile devices, especially iOS Safari
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Try to use the Share API if available (works on iOS Safari)
+        if (navigator.share) {
+          // Convert base64 to blob
+          const response = await fetch(imageUrl);
+          const blob = await response.blob();
+          const file = new File([blob], `UnReDO-ACID-${Date.now()}.png`, { type: 'image/png' });
+          
+          await navigator.share({
+            files: [file],
+            title: 'Generated Image',
+            text: 'Check out this AI-generated image!'
+          });
+          return;
+        }
+        
+        // Fallback: Open in new tab for long-press save
+        const newWindow = window.open();
+        if (newWindow) {
+          newWindow.document.write(`
+            <html>
+              <head>
+                <title>Download Image</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                  body { margin: 0; padding: 20px; background: #000; text-align: center; }
+                  img { max-width: 100%; height: auto; }
+                  p { color: #FFEA00; font-family: monospace; margin-top: 20px; }
+                </style>
+              </head>
+              <body>
+                <img src="${imageUrl}" alt="Generated Image" />
+                <p>Long press the image and select "Save Image" or "Add to Photos"</p>
+              </body>
+            </html>
+          `);
+          newWindow.document.close();
+        }
+      } else {
+        // Desktop: Standard download
+        const link = document.createElement('a');
+        link.href = imageUrl;
+        link.download = `UnReDO-ACID-${Date.now()}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (error) {
+      console.error('Download failed:', error);
+      // Fallback: Open in new tab
+      window.open(imageUrl, '_blank');
+    }
   };
 
   const handleRemove = async (id: string) => {

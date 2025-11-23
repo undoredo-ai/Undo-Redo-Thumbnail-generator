@@ -25,6 +25,30 @@
         font-size: 16px; /* Prevents iOS zoom on focus */
       }
 
+      /* Safari-specific fixes */
+      @supports (-webkit-touch-callout: none) {
+        /* iOS Safari */
+        body {
+          -webkit-user-select: none;
+          user-select: none;
+        }
+        
+        input, textarea {
+          -webkit-user-select: text;
+          user-select: text;
+        }
+        
+        /* Fix for iOS Safari viewport height */
+        .h-screen {
+          height: -webkit-fill-available;
+        }
+      }
+      
+      /* Prevent pull-to-refresh on mobile */
+      body {
+        overscroll-behavior-y: contain;
+      }
+
       /* --- ACID GRAPHICS ENGINE --- */
       
       /* 1. Global Acid Cursor */
